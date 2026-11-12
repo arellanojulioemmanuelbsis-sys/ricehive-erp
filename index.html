@@ -84,6 +84,8 @@ const seed={products:[
  activity:[['✓','Stock count completed','Jamie Mendoza reconciled 3 products','Today · 9:42 AM'],['⇩','Delivery received','GR-2025-084 · Nueva Ecija Grains Co.','Today · 9:18 AM'],['!','Reorder alert triggered','Thai Hom Mali is below reorder level','Yesterday · 4:36 PM'],['⇧','Stock released','GI-2025-126 · Northstar Grocery','Yesterday · 2:10 PM']]};
 let db;try{db=JSON.parse(localStorage.getItem('ricehive-data'))||structuredClone(seed)}catch{db=structuredClone(seed)}
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],fmt=n=>new Intl.NumberFormat('en-PH').format(n),save=()=>localStorage.setItem('ricehive-data',JSON.stringify(db));
+function logout(){try{sessionStorage.removeItem('ricehive-login');sessionStorage.removeItem('ricehive-user')}catch{}$('#loginScreen').style.display='flex';$('.app').style.display='none';setAuthMode('login')}
+$('#logoutBtn').addEventListener('click',logout);
 function badge(status){let c=status==='Accepted'||status==='Released'?'green':status==='Discrepancy'?'amber':status==='Low stock'?'red':'green';return `<span class="badge ${c}">${status}</span>`}
 function totals(){return db.products.reduce((a,p)=>(a.qty+=p.qty,a.received+=p.received,a.released+=p.released,a.alerts+=p.qty<=p.reorder?1:0,a),{qty:0,received:0,released:0,alerts:0})}
 function productCell(p){return `<div class="product-cell"><span class="rice-icon">▧</span><span>${p.name}</span></div>`}
@@ -114,8 +116,6 @@ function showApp(user){sessionStorage.setItem('ricehive-login','yes');sessionSto
 if(sessionStorage.getItem('ricehive-login')==='yes'){let savedUser;try{savedUser=JSON.parse(sessionStorage.getItem('ricehive-user'))}catch{}showApp(savedUser)}else{$('#loginScreen').style.display='flex';$('.app').style.display='none'}
 $('#authSwitch').onclick=()=>setAuthMode(authMode==='login'?'signup':'login');
 $('#loginForm').onsubmit=e=>{e.preventDefault();showAuthError('');const data=Object.fromEntries(new FormData(e.target));const email=data.email.trim().toLowerCase();let users;try{users=JSON.parse(localStorage.getItem(authUsersKey))||[]}catch{users=[]}if(authMode==='signup'){if(data.password.length<8){showAuthError('Use a password with at least 8 characters.');return}if(users.some(user=>user.email===email)){showAuthError('An account with this email already exists. Log in instead.');return}const user={name:data.name.trim(),email};users.push(user);localStorage.setItem(authUsersKey,JSON.stringify(users));showApp(user)}else{const user=users.find(account=>account.email===email);if(!user){showAuthError('No account found for this email in this browser. Create an account first.');return}showApp(user)}};
-function logout(){sessionStorage.removeItem('ricehive-login');sessionStorage.removeItem('ricehive-user');window.location.reload()}
-$('#logoutBtn').addEventListener('click',logout);
 $('#generateReport').onclick=()=>toast('Inventory report generated');
 render();
 </script>
