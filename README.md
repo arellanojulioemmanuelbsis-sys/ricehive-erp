@@ -20,8 +20,8 @@ The included `vercel.json` keeps clean URL handling enabled.
 ## Demo behavior
 
 - Demo records are saved in the current browser's local storage.
-- Demo login accepts any valid email and non-empty password.
-- This prototype has no server, shared database, or real authentication. Do not use it for production inventory or credentials.
+- Demo users can create an account and log in on the same browser; accounts are stored in local storage.
+- This prototype has no server, shared database, or secure authentication. Accounts do not sync between collaborators or devices, and passwords are not protected for production use.
 
 ## Included screens
 
