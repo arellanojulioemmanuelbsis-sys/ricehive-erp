@@ -30,7 +30,7 @@
     </nav>
     <div class="nav-label" style="margin-top:15px">Inventory management</div>
     <nav class="nav"><button data-view="adjustments"><span class="nav-icon">±</span>Stock Adjustments</button><button data-view="warehouses"><span class="nav-icon">⌖</span>Warehouse</button></nav>
-    <div class="nav-label" style="margin-top:15px">Account</div><nav class="nav"><button data-view="settings"><span class="nav-icon">⚙</span>Settings</button><button id="logoutBtn"><span class="nav-icon">↪</span>Log out</button></nav>
+    <div class="nav-label" style="margin-top:15px">Account</div><nav class="nav"><button data-view="settings"><span class="nav-icon">⚙</span>Settings</button><button id="logoutBtn" type="button"><span class="nav-icon">↪</span>Log out</button></nav>
     <div class="side-bottom"><div class="avatar">JM</div><div><div class="user-name">Jamie Mendoza</div><div class="user-role">Inventory Supervisor</div></div></div>
   </aside>
   <main class="main">
@@ -114,7 +114,8 @@ function showApp(user){sessionStorage.setItem('ricehive-login','yes');sessionSto
 if(sessionStorage.getItem('ricehive-login')==='yes'){let savedUser;try{savedUser=JSON.parse(sessionStorage.getItem('ricehive-user'))}catch{}showApp(savedUser)}else{$('#loginScreen').style.display='flex';$('.app').style.display='none'}
 $('#authSwitch').onclick=()=>setAuthMode(authMode==='login'?'signup':'login');
 $('#loginForm').onsubmit=e=>{e.preventDefault();showAuthError('');const data=Object.fromEntries(new FormData(e.target));const email=data.email.trim().toLowerCase();let users;try{users=JSON.parse(localStorage.getItem(authUsersKey))||[]}catch{users=[]}if(authMode==='signup'){if(data.password.length<8){showAuthError('Use a password with at least 8 characters.');return}if(users.some(user=>user.email===email)){showAuthError('An account with this email already exists. Log in instead.');return}const user={name:data.name.trim(),email};users.push(user);localStorage.setItem(authUsersKey,JSON.stringify(users));showApp(user)}else{const user=users.find(account=>account.email===email);if(!user){showAuthError('No account found for this email in this browser. Create an account first.');return}showApp(user)}};
-$('#logoutBtn').onclick=()=>{sessionStorage.removeItem('ricehive-login');sessionStorage.removeItem('ricehive-user');$('.app').style.display='none';$('#loginScreen').style.display='flex';setAuthMode('login')};
+function logout(){sessionStorage.removeItem('ricehive-login');sessionStorage.removeItem('ricehive-user');window.location.reload()}
+$('#logoutBtn').addEventListener('click',logout);
 $('#generateReport').onclick=()=>toast('Inventory report generated');
 render();
 </script>
